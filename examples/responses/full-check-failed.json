@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-full-failed01",
+  "trace_id": "trace-pair04-failure01",
+  "job_type": "FULL_CHECK",
+  "status": "FAILED",
+  "input": {
+    "repository_commit": "2222222222222222222222222222222222222222"
+  },
+  "output": null,
+  "error": {
+    "code": "ENV_3002",
+    "message": "The supplied image could not execute the clean build command",
+    "retryable": false,
+    "details": { "exit_code": 127 }
+  },
+  "links": { "self": "/v1/jobs/job-full-failed01" }
+}

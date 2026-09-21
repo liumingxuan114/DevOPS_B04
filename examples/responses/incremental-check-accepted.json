@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-inc01",
+  "trace_id": "trace-pair04-flow02",
+  "job_type": "INCREMENTAL_CHECK",
+  "status": "QUEUED",
+  "links": { "self": "/v1/jobs/job-inc01" }
+}

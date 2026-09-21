@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.edu/devops/e2/v1/create-request.schema.json",
+  "title": "E2 asynchronous job creation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "trace_id", "job_type", "execution", "input"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "trace_id": { "type": "string", "pattern": "^trace-[a-z0-9-]{3,64}$" },
+    "job_type": {
+      "enum": ["DRAFT", "FULL_CHECK", "INCREMENTAL_CHECK", "REPAIR"]
+    },
+    "execution": { "$ref": "#/$defs/execution" },
+    "input": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "job_type": { "const": "DRAFT" },
+            "input": { "$ref": "#/$defs/draftInput" }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "FULL_CHECK" },
+            "input": { "$ref": "#/$defs/fullCheckInput" }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "INCREMENTAL_CHECK" },
+            "input": { "$ref": "#/$defs/incrementalCheckInput" }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "REPAIR" },
+            "input": { "$ref": "#/$defs/repairInput" }
+          }
+        }
+      ]
+    }
+  ],
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "commit"],
+      "properties": {
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "commit": { "$ref": "#/$defs/commit" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeout_seconds"],
+      "properties": {
+        "timeout_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "verify_command"],
+      "properties": {
+        "command": { "type": "string", "minLength": 1 },
+        "verify_command": { "type": "string", "minLength": 1 }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image_uri", "configuration_id"],
+      "properties": {
+        "image_uri": { "type": "string", "minLength": 1 },
+        "configuration_id": { "type": "string", "pattern": "^[A-Za-z0-9._-]{2,64}$" }
+      }
+    },
+    "draftInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "project_root", "build", "max_iterations"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "project_root": { "type": "string", "minLength": 1 },
+        "build": { "$ref": "#/$defs/build" },
+        "max_iterations": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "fullCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "environment", "project_root", "build"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "environment": { "$ref": "#/$defs/environment" },
+        "project_root": { "type": "string", "minLength": 1 },
+        "build": { "$ref": "#/$defs/build" }
+      }
+    },
+    "incrementalCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "base_commit", "baseline", "environment", "project_root", "build"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "base_commit": { "$ref": "#/$defs/commit" },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actual_graph_uri", "commit", "configuration_id"],
+          "properties": {
+            "actual_graph_uri": { "type": "string", "pattern": "^artifact://" },
+            "commit": { "$ref": "#/$defs/commit" },
+            "configuration_id": { "type": "string", "minLength": 2 }
+          }
+        },
+        "environment": { "$ref": "#/$defs/environment" },
+        "project_root": { "type": "string", "minLength": 1 },
+        "build": { "$ref": "#/$defs/build" }
+      }
+    },
+    "repairInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "error_report_uri", "target_file", "environment", "build"],
+      "properties": {
+        "repository": { "$ref": "#/$defs/repository" },
+        "error_report_uri": { "type": "string", "pattern": "^artifact://" },
+        "target_file": { "type": "string", "minLength": 1 },
+        "environment": { "$ref": "#/$defs/environment" },
+        "build": { "$ref": "#/$defs/build" }
+      }
+    }
+  }
+}

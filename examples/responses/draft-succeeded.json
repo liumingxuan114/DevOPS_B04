@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-draft01",
+  "trace_id": "trace-pair04-flow01",
+  "job_type": "DRAFT",
+  "status": "SUCCEEDED",
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "1111111111111111111111111111111111111111"
+    },
+    "project_root": ".",
+    "build": {
+      "command": "./mvnw -B -DskipTests package",
+      "verify_command": "./mvnw -B test"
+    },
+    "max_iterations": 3
+  },
+  "output": {
+    "dockerfile": {
+      "artifact_id": "dockerfile-001",
+      "type": "DOCKERFILE",
+      "uri": "artifact://pair04/draft01/Dockerfile",
+      "media_type": "text/plain",
+      "producer_job_id": "job-draft01",
+      "sha256": "04556cf3f462d3bd2d01c0b61d3a9c379331e2511646bc78b0fb881bed21a6a8"
+    },
+    "image": {
+      "reference": "registry.example.edu/pair04/dependency-demo:1111111",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "iterations": [
+      { "number": 1, "decision": "Use the repository Maven wrapper with JDK 11", "build_succeeded": true }
+    ],
+    "final": { "build_succeeded": true, "verify_succeeded": true }
+  },
+  "error": null,
+  "links": { "self": "/v1/jobs/job-draft01" }
+}

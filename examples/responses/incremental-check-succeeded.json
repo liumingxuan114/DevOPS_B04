@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-inc01",
+  "trace_id": "trace-pair04-flow02",
+  "job_type": "INCREMENTAL_CHECK",
+  "status": "SUCCEEDED",
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "3333333333333333333333333333333333333333"
+    },
+    "base_commit": "2222222222222222222222222222222222222222",
+    "baseline": {
+      "actual_graph_uri": "artifact://pair04/full01/actual.json",
+      "commit": "2222222222222222222222222222222222222222",
+      "configuration_id": "cc-MODE0"
+    },
+    "environment": {
+      "image_uri": "registry.example.edu/pair04/dependency-demo@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "configuration_id": "cc-MODE0"
+    },
+    "project_root": ".",
+    "build": {
+      "command": "./mvnw -B clean package",
+      "verify_command": "./mvnw -B test"
+    }
+  },
+  "output": {
+    "base_commit": "2222222222222222222222222222222222222222",
+    "actual_graph": {
+      "artifact_id": "graph-actual-002",
+      "type": "ACTUAL_GRAPH",
+      "uri": "artifact://pair04/inc01/actual.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-inc01",
+      "sha256": "96f5e0e745151d4fbaf21d27673d5f16e47b6d5d4a4b81bb6ecda78b1d878881"
+    },
+    "error_report": {
+      "artifact_id": "error-report-002",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://pair04/inc01/error-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-inc01",
+      "sha256": "66e5d23601c43c0b546c49215b42e025efd964a77094aa278d02cd78ed5b0912"
+    },
+    "changes": { "new": 0, "resolved": 1, "unchanged": 1 }
+  },
+  "error": null,
+  "links": { "self": "/v1/jobs/job-inc01" }
+}

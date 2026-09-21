@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-repair01",
+  "trace_id": "trace-pair04-flow03",
+  "job_type": "REPAIR",
+  "status": "QUEUED",
+  "links": { "self": "/v1/jobs/job-repair01" }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.edu/devops/e2/v1/create-response.schema.json",
+  "title": "HTTP 202 job creation response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "trace_id", "job_type", "status", "links"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "job_id": { "type": "string", "pattern": "^job-[a-z0-9-]{3,64}$" },
+    "trace_id": { "type": "string", "pattern": "^trace-[a-z0-9-]{3,64}$" },
+    "job_type": { "enum": ["DRAFT", "FULL_CHECK", "INCREMENTAL_CHECK", "REPAIR"] },
+    "status": { "const": "QUEUED" },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self"],
+      "properties": {
+        "self": { "type": "string", "pattern": "^/v1/jobs/job-" }
+      }
+    }
+  }
+}

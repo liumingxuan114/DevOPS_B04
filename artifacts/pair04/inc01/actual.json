@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "commit": "3333333333333333333333333333333333333333",
+  "base_commit": "2222222222222222222222222222222222222222",
+  "configuration_id": "cc-MODE0",
+  "edges": [
+    { "target": "main.o", "dependency": "main.c", "evidence": "compiler-read" },
+    { "target": "main.o", "dependency": "config.h", "evidence": "compiler-read" },
+    { "target": "app", "dependency": "main.o", "evidence": "linker-input" }
+  ]
+}

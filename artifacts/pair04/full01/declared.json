@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "commit": "2222222222222222222222222222222222222222",
+  "configuration_id": "cc-MODE0",
+  "edges": [
+    { "target": "main.o", "dependency": "main.c", "location": "Makefile:8" },
+    { "target": "main.o", "dependency": "legacy.h", "location": "Makefile:8" },
+    { "target": "app", "dependency": "main.o", "location": "Makefile:11" }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-pair04-invalid01",
+  "job_type": "ABC",
+  "execution": { "timeout_seconds": 600 },
+  "input": {}
+}

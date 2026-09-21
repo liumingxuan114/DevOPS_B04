@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "repository_commit": "2222222222222222222222222222222222222222",
+  "configuration_id": "cc-MODE0",
+  "detector": "BUILD_CHECKER",
+  "findings": [
+    {
+      "finding_id": "finding-md-001",
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "location": "Makefile:8",
+      "evidence": "config.h was opened by the compiler but is absent from the prerequisite list"
+    },
+    {
+      "finding_id": "finding-rd-001",
+      "type": "REDUNDANT",
+      "target": "main.o",
+      "dependency": "legacy.h",
+      "location": "Makefile:8",
+      "evidence": "legacy.h is declared but was not read under cc-MODE0"
+    }
+  ]
+}

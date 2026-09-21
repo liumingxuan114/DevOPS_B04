@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-draft01",
+  "trace_id": "trace-pair04-flow01",
+  "job_type": "DRAFT",
+  "status": "QUEUED",
+  "links": { "self": "/v1/jobs/job-draft01" }
+}

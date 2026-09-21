@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-pair04-flow01",
+  "job_type": "DRAFT",
+  "execution": { "timeout_seconds": 900 },
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "1111111111111111111111111111111111111111"
+    },
+    "project_root": ".",
+    "build": {
+      "command": "./mvnw -B -DskipTests package",
+      "verify_command": "./mvnw -B test"
+    },
+    "max_iterations": 3
+  }
+}

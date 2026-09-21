@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.edu/devops/e2/v1/job.schema.json",
+  "title": "Queryable asynchronous job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "job_id", "trace_id", "job_type", "status", "input", "output", "error", "links"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "job_id": { "type": "string", "pattern": "^job-[a-z0-9-]{3,64}$" },
+    "trace_id": { "type": "string", "pattern": "^trace-[a-z0-9-]{3,64}$" },
+    "job_type": { "enum": ["DRAFT", "FULL_CHECK", "INCREMENTAL_CHECK", "REPAIR"] },
+    "status": { "enum": ["QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELLED"] },
+    "input": { "type": "object" },
+    "output": { "type": ["object", "null"] },
+    "error": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/systemError" }
+      ]
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self"],
+      "properties": {
+        "self": { "type": "string", "pattern": "^/v1/jobs/job-" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "job_type": { "const": "DRAFT" },
+            "output": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/draftOutput" }] }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "FULL_CHECK" },
+            "output": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/fullCheckOutput" }] }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "INCREMENTAL_CHECK" },
+            "output": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/incrementalCheckOutput" }] }
+          }
+        },
+        {
+          "properties": {
+            "job_type": { "const": "REPAIR" },
+            "output": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/repairOutput" }] }
+          }
+        }
+      ]
+    },
+    {
+      "if": { "properties": { "status": { "const": "SUCCEEDED" } } },
+      "then": {
+        "properties": {
+          "output": { "type": "object" },
+          "error": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["FAILED", "TIMED_OUT"] } } },
+      "then": {
+        "properties": {
+          "output": { "type": "null" },
+          "error": { "$ref": "#/$defs/systemError" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["QUEUED", "RUNNING", "CANCELLED"] } } },
+      "then": {
+        "properties": {
+          "output": { "type": "null" },
+          "error": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "type", "uri", "media_type", "producer_job_id", "sha256"],
+      "properties": {
+        "artifact_id": { "type": "string", "pattern": "^[a-z0-9-]{3,64}$" },
+        "type": { "enum": ["DOCKERFILE", "BUILD_LOG", "ACTUAL_GRAPH", "DECLARED_GRAPH", "ERROR_REPORT", "GIT_PATCH", "REPAIR_REPORT"] },
+        "uri": { "type": "string", "pattern": "^artifact://[A-Za-z0-9._/-]+$" },
+        "media_type": { "type": "string", "minLength": 3 },
+        "producer_job_id": { "type": "string", "pattern": "^job-[a-z0-9-]{3,64}$" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "systemError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": { "enum": ["CONTRACT_1001", "BASELINE_2001", "ENV_3002", "EXEC_4002", "ANALYSIS_5001"] },
+        "message": { "type": "string", "minLength": 1 },
+        "retryable": { "type": "boolean" },
+        "details": { "type": "object" }
+      }
+    },
+    "draftOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dockerfile", "image", "iterations", "final"],
+      "properties": {
+        "dockerfile": { "$ref": "#/$defs/artifact" },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reference", "digest"],
+          "properties": {
+            "reference": { "type": "string", "minLength": 1 },
+            "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+          }
+        },
+        "iterations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["number", "decision", "build_succeeded"],
+            "properties": {
+              "number": { "type": "integer", "minimum": 1 },
+              "decision": { "type": "string", "minLength": 1 },
+              "build_succeeded": { "type": "boolean" }
+            }
+          }
+        },
+        "final": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["build_succeeded", "verify_succeeded"],
+          "properties": {
+            "build_succeeded": { "type": "boolean" },
+            "verify_succeeded": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "fullCheckOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actual_graph", "declared_graph", "error_report", "findings_summary"],
+      "properties": {
+        "actual_graph": { "$ref": "#/$defs/artifact" },
+        "declared_graph": { "$ref": "#/$defs/artifact" },
+        "error_report": { "$ref": "#/$defs/artifact" },
+        "findings_summary": { "$ref": "#/$defs/findingsSummary" }
+      }
+    },
+    "incrementalCheckOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_commit", "actual_graph", "error_report", "changes"],
+      "properties": {
+        "base_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "actual_graph": { "$ref": "#/$defs/artifact" },
+        "error_report": { "$ref": "#/$defs/artifact" },
+        "changes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["new", "resolved", "unchanged"],
+          "properties": {
+            "new": { "type": "integer", "minimum": 0 },
+            "resolved": { "type": "integer", "minimum": 0 },
+            "unchanged": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "repairOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["patch", "repair_report", "validation"],
+      "properties": {
+        "patch": { "$ref": "#/$defs/artifact" },
+        "repair_report": { "$ref": "#/$defs/artifact" },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["build", "test", "recheck", "accepted"],
+          "properties": {
+            "build": { "enum": ["PASSED", "FAILED"] },
+            "test": { "enum": ["PASSED", "FAILED"] },
+            "recheck": { "enum": ["PASSED", "FAILED"] },
+            "accepted": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "findingsSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing", "redundant"],
+      "properties": {
+        "missing": { "type": "integer", "minimum": 0 },
+        "redundant": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

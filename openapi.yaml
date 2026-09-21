@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: E2 Paired Services Contract
+  version: 1.0.0
+  description: 四类异步任务的课程接口契约；E2 仅定义，不代表已经部署服务。
+servers:
+  - url: https://services.example.edu
+paths:
+  /v1/dockerfile-jobs:
+    post:
+      summary: 创建 DRAFT 环境生成任务
+      operationId: createDraftJob
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './contracts/v1/create-request.schema.json'
+            examples:
+              draft:
+                externalValue: './examples/requests/draft.json'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        '400':
+          $ref: '#/components/responses/InvalidContract'
+  /v1/full-check-jobs:
+    post:
+      summary: 创建 BuildChecker 全量检测任务
+      operationId: createFullCheckJob
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './contracts/v1/create-request.schema.json'
+            examples:
+              fullCheck:
+                externalValue: './examples/requests/full-check.json'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        '400':
+          $ref: '#/components/responses/InvalidContract'
+  /v1/incremental-check-jobs:
+    post:
+      summary: 创建 EChecker 增量检测任务
+      operationId: createIncrementalCheckJob
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './contracts/v1/create-request.schema.json'
+            examples:
+              incrementalCheck:
+                externalValue: './examples/requests/incremental-check.json'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        '400':
+          $ref: '#/components/responses/InvalidContract'
+  /v1/repair-jobs:
+    post:
+      summary: 创建 MDFixer 缺失依赖修复任务
+      operationId: createRepairJob
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './contracts/v1/create-request.schema.json'
+            examples:
+              repair:
+                externalValue: './examples/requests/repair.json'
+      responses:
+        '202':
+          $ref: '#/components/responses/JobAccepted'
+        '400':
+          $ref: '#/components/responses/InvalidContract'
+  /v1/jobs/{job_id}:
+    get:
+      summary: 查询异步任务
+      operationId: getJob
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^job-[a-z0-9-]{3,64}$'
+      responses:
+        '200':
+          description: 当前 Job 状态、结果或系统错误
+          content:
+            application/json:
+              schema:
+                $ref: './contracts/v1/job.schema.json'
+        '404':
+          description: Job 不存在
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 客户端生成；相同键与相同请求必须返回同一 job_id。
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+  responses:
+    JobAccepted:
+      description: 任务已接受并进入 QUEUED
+      content:
+        application/json:
+          schema:
+            $ref: './contracts/v1/create-response.schema.json'
+    InvalidContract:
+      description: 输入不符合 Schema 或跨字段约束，错误码 CONTRACT_1001 或 BASELINE_2001

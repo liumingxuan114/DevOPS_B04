@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-pair04-invalid04",
+  "job_type": "REPAIR",
+  "execution": { "timeout_seconds": 600 },
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "2222222222222222222222222222222222222222"
+    },
+    "error_report_uri": "artifact://pair04/full01/error-report.json",
+    "target_file": "Makefile",
+    "environment": {
+      "image_uri": "registry.example.edu/pair04/dependency-demo:test",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "./mvnw -B clean package",
+      "verify_command": "./mvnw -B test"
+    }
+  }
+}

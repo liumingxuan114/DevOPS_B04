@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-repair01",
+  "trace_id": "trace-pair04-flow03",
+  "job_type": "REPAIR",
+  "status": "SUCCEEDED",
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "3333333333333333333333333333333333333333"
+    },
+    "error_report_uri": "artifact://pair04/full01/md-only-report.json",
+    "target_file": "Makefile",
+    "environment": {
+      "image_uri": "registry.example.edu/pair04/dependency-demo@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "configuration_id": "cc-MODE0"
+    },
+    "build": {
+      "command": "./mvnw -B clean package",
+      "verify_command": "./mvnw -B test"
+    }
+  },
+  "output": {
+    "patch": {
+      "artifact_id": "patch-001",
+      "type": "GIT_PATCH",
+      "uri": "artifact://pair04/repair01/fix-missing-config.diff",
+      "media_type": "text/x-diff",
+      "producer_job_id": "job-repair01",
+      "sha256": "e323301deeeb40a3cf7cd5be452ce239634f7348ee4755756301a92c75a923a6"
+    },
+    "repair_report": {
+      "artifact_id": "repair-report-001",
+      "type": "REPAIR_REPORT",
+      "uri": "artifact://pair04/repair01/repair-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-repair01",
+      "sha256": "87626ef62f89731c4ea791d46ffcf7ba7457586a6860a6e1bd1251983a5ab6d7"
+    },
+    "validation": {
+      "build": "PASSED",
+      "test": "PASSED",
+      "recheck": "PASSED",
+      "accepted": true
+    }
+  },
+  "error": null,
+  "links": { "self": "/v1/jobs/job-repair01" }
+}

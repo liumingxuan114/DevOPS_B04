@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-full01",
+  "trace_id": "trace-pair04-flow01",
+  "job_type": "FULL_CHECK",
+  "status": "SUCCEEDED",
+  "input": {
+    "repository": {
+      "url": "https://git.nju.edu.cn/pair04/dependency-demo.git",
+      "commit": "2222222222222222222222222222222222222222"
+    },
+    "environment": {
+      "image_uri": "registry.example.edu/pair04/dependency-demo@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "configuration_id": "cc-MODE0"
+    },
+    "project_root": ".",
+    "build": {
+      "command": "./mvnw -B clean package",
+      "verify_command": "./mvnw -B test"
+    }
+  },
+  "output": {
+    "actual_graph": {
+      "artifact_id": "graph-actual-001",
+      "type": "ACTUAL_GRAPH",
+      "uri": "artifact://pair04/full01/actual.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full01",
+      "sha256": "914024edb1606c2d654d8cc6d6cc31fd84f1c9b2ec72b263165158dabc8c7e98"
+    },
+    "declared_graph": {
+      "artifact_id": "graph-declared-001",
+      "type": "DECLARED_GRAPH",
+      "uri": "artifact://pair04/full01/declared.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full01",
+      "sha256": "922304d31a2078b13992a1d79d2bf6e72e36cc7b918127fceaffbb9114dba8be"
+    },
+    "error_report": {
+      "artifact_id": "error-report-001",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://pair04/full01/error-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-full01",
+      "sha256": "ab9ad193d864cdedb3118c51c89f3593edddbf821d2f6d49ee4c7c7077e401ea"
+    },
+    "findings_summary": { "missing": 1, "redundant": 1 }
+  },
+  "error": null,
+  "links": { "self": "/v1/jobs/job-full01" }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "repository_commit": "3333333333333333333333333333333333333333",
+  "configuration_id": "cc-MODE0",
+  "detector": "BUILD_CHECKER",
+  "findings": [
+    {
+      "finding_id": "finding-md-002",
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "location": "Makefile:8",
+      "evidence": "config.h was opened by the compiler but is absent from the prerequisite list"
+    }
+  ]
+}

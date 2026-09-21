@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "repository_commit": "3333333333333333333333333333333333333333",
+  "base_commit": "2222222222222222222222222222222222222222",
+  "configuration_id": "cc-MODE0",
+  "detector": "E_CHECKER",
+  "findings": [
+    {
+      "finding_id": "finding-md-002",
+      "type": "MISSING",
+      "change": "UNCHANGED",
+      "target": "main.o",
+      "dependency": "config.h",
+      "location": "Makefile:8",
+      "evidence": "finding is still present at C1"
+    }
+  ]
+}
